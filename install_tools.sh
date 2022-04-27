@@ -7,6 +7,8 @@ sudo apt-get install -y docker.io
 sudo usermod -aG docker ubuntu
 
 sudo apt-get install git -y
+sudo hostnamectl set-hostname ubuntu-${hostname}
+sudo reboot
 
 ## These are for CKS course. can be deleted after passing the exam.
 

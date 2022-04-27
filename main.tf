@@ -1,20 +1,28 @@
 data "aws_vpc" "myvpc" {
   default = true
-
 }
+
+data "template_file" "init" {
+  count = 3
+  template = "${file("install_tools.sh")}"
+
+  vars = {
+    hostname = "quick-EC2-ubuntu ${count.index+1}"
+  }
+}
+
 resource "aws_key_pair" "demo-key" {
   key_name   = "demo-ec2-key"
   public_key = file("${path.cwd}/demokey.pub")
 
 }
 
-
 resource "aws_instance" "quick-ec2_ubuntu" {
   count = 3
   instance_type          = "t3.medium"
   ami                    = "ami-04505e74c0741db8d"
   key_name               = aws_key_pair.demo-key.id
-  user_data              = file("install_tools.sh")
+  user_data              = data.template_file.init[count.index].rendered
   vpc_security_group_ids = [aws_security_group.allow_HTTP_SSH.id]
   tags = {
     "Name" = "quick-EC2-ubuntu ${count.index+1}"
