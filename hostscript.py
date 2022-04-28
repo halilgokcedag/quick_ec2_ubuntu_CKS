@@ -27,5 +27,5 @@ lst=lst[:3]
 if len(lst)==3:
     number=1
     for i in lst:
-        print("ubuntuk8s-"+str(number)+"\t"+i)
+        print(i+"\t"+"ubuntuk8s-"+str(number))
         number+=1
