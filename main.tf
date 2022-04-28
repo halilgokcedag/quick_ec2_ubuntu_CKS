@@ -85,7 +85,7 @@ resource "aws_security_group" "allow_traffic_within_cluster" {
   vpc_id      = data.aws_vpc.myvpc.id
 
   ingress {
-    description      = "HTTP from anywhere"
+    description      = "Allow all traffic"
     from_port        = 0
     to_port          = 0
     protocol         = "-1"

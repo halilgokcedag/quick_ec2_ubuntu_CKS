@@ -30,9 +30,9 @@ EOF
 
 5. create cluster with kubeadm:
 
-'''
+```
  kubeadm init --pod-network-cidr 192.168.0.0/16 --kubernetes-version 1.23.0
- '''
+ ```
 
 6. Once you see below command. Run the below commands.
 
@@ -48,21 +48,22 @@ Alternatively, if you are the root user, you can run:
 
 7. Run kubeadm join command from worker nodes.
 ```
-kubeadm join 172.31.9.249:6443 --token rs2bkd.utdhn7jmiao0n6ke \
+sudo kubeadm join 172.31.9.249:6443 --token rs2bkd.utdhn7jmiao0n6ke \
         --discovery-token-ca-cert-hash sha256:030f242c3dc2fa125f5d403df6b782901bc152eaf2d2750e5fab3ce697e65060
 
 ```
 
 8. Install network solution calico
 ### calico
-
+```
 kubectl create -f https://projectcalico.docs.tigera.io/manifests/tigera-operator.yaml
 
 kubectl create -f https://projectcalico.docs.tigera.io/manifests/custom-resources.yaml
 
 watch kubectl get pods -n calico-system
-
+```
 9. Remove the taint from control node
+```
 kubectl taint nodes --all node-role.kubernetes.io/master-
-
+```
 
