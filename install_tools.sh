@@ -56,7 +56,6 @@ alias k=kubectl
 complete -F __start_kubectl k
 
 
-
 sudo reboot
 
 ## These are for CKS course. can be deleted after passing the exam.

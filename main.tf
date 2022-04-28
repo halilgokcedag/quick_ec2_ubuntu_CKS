@@ -77,3 +77,39 @@ resource "aws_security_group" "allow_HTTP_SSH" {
     Name = "allow_some ports"
   }
 }
+
+
+# resource "aws_security_group" "allow_K8s_traffic_between nodes" {
+#   name        = "allow_K8s_traffic"
+#   description = "Allow K8s traffic inbound traffic"
+#   vpc_id      = data.aws_vpc.myvpc.id
+
+#   ingress {
+#     description      = "HTTP from anywhere"
+#     from_port        = 80
+#     to_port          = 80
+#     protocol         = "tcp"
+#     cidr_blocks      = ["0.0.0.0/0"]
+#     ipv6_cidr_blocks = ["0.0.0.0/0"]
+#   }
+#   ingress {
+#     description      = "SSh from anywhere"
+#     from_port        = 22
+#     to_port          = 22
+#     protocol         = "tcp"
+#     cidr_blocks      = ["0.0.0.0/0"]
+#     ipv6_cidr_blocks = ["0.0.0.0/0"]
+#   }
+
+#   egress {
+#     from_port        = 0
+#     to_port          = 0
+#     protocol         = "-1"
+#     cidr_blocks      = ["0.0.0.0/0"]
+#     ipv6_cidr_blocks = ["::/0"]
+#   }
+
+#   tags = {
+#     Name = "allow_some ports"
+#   }
+# }
