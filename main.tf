@@ -22,7 +22,7 @@ resource "aws_instance" "quick-ec2_ubuntu" {
   ami                    = "ami-04505e74c0741db8d"
   key_name               = aws_key_pair.demo-key.id
   user_data              = data.template_file.init[count.index].rendered
-  vpc_security_group_ids = [aws_security_group.allow_HTTP_SSH.id]
+  vpc_security_group_ids = [aws_security_group.allow_HTTP_SSH.id, aws_security_group.allow_traffic_within_cluster.id]
   tags = {
     "Name" = "quick-EC2-ubuntu ${count.index+1}"
   }
@@ -79,37 +79,27 @@ resource "aws_security_group" "allow_HTTP_SSH" {
 }
 
 
-# resource "aws_security_group" "allow_K8s_traffic_between nodes" {
-#   name        = "allow_K8s_traffic"
-#   description = "Allow K8s traffic inbound traffic"
-#   vpc_id      = data.aws_vpc.myvpc.id
+resource "aws_security_group" "allow_traffic_within_cluster" {
+  name        = "allow_K8s_traffic"
+  description = "Allow K8s traffic inbound traffic"
+  vpc_id      = data.aws_vpc.myvpc.id
 
-#   ingress {
-#     description      = "HTTP from anywhere"
-#     from_port        = 80
-#     to_port          = 80
-#     protocol         = "tcp"
-#     cidr_blocks      = ["0.0.0.0/0"]
-#     ipv6_cidr_blocks = ["0.0.0.0/0"]
-#   }
-#   ingress {
-#     description      = "SSh from anywhere"
-#     from_port        = 22
-#     to_port          = 22
-#     protocol         = "tcp"
-#     cidr_blocks      = ["0.0.0.0/0"]
-#     ipv6_cidr_blocks = ["0.0.0.0/0"]
-#   }
+  ingress {
+    description      = "HTTP from anywhere"
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    security_groups  = [aws_security_group.allow_HTTP_SSH.id]
+  }
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
 
-#   egress {
-#     from_port        = 0
-#     to_port          = 0
-#     protocol         = "-1"
-#     cidr_blocks      = ["0.0.0.0/0"]
-#     ipv6_cidr_blocks = ["::/0"]
-#   }
-
-#   tags = {
-#     Name = "allow_some ports"
-#   }
-# }
+  tags = {
+    Name = "allow_all ports within the SG allow_HTTP_SSH"
+  }
+}
