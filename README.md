@@ -1,15 +1,19 @@
 # quick_ec2_ubuntu_CKS
 
-This EC2 is for quick testing for CKS preparation. 
+This EC2 is for quick testing for CKS preparation. 1 control and 2 worker nodes. 
 
 Uses Ubuntu AMI. 40G root volume.
 
-Installs Docker, Git via user data.
+Installs Docker, Git, k8s via user data.
 
+# Deployment
 
-update etc/hosts file with the output from hostscript.py script.
-
-# workaround başlangıç - kubelet systemd için
+1. Run the terraform apply command.
+2. Once apply is complete. Run  hostscript.py python file. update etc/hosts file with the output from hostscript.py script.
+3. Login to all 3 nodes and add the hostname ve ips from step 2.
+4. 
+### workaround start - k8s related commands
+```
 sudo mkdir /etc/docker
 cat <<EOF | sudo tee /etc/docker/daemon.json
 {
@@ -21,43 +25,36 @@ cat <<EOF | sudo tee /etc/docker/daemon.json
   "storage-driver": "overlay2"
 }
 EOF
-# workaround son
+```
+### workaround son
 
-create cluster with kubeadm:
+5. create cluster with kubeadm:
 
 '''
  kubeadm init --pod-network-cidr 192.168.0.0/16 --kubernetes-version 1.23.0
  '''
 
-
-
-sonuç!!
-[addons] Applied essential addon: kube-proxy
+6. Once you see below command. Run the below commands.
 
 Your Kubernetes control-plane has initialized successfully!
-
-To start using your cluster, you need to run the following as a regular user:
-
+```
   mkdir -p $HOME/.kube
   sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
   sudo chown $(id -u):$(id -g) $HOME/.kube/config
-
+```
 Alternatively, if you are the root user, you can run:
 
   export KUBECONFIG=/etc/kubernetes/admin.conf
 
-You should now deploy a pod network to the cluster.
-Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
-  https://kubernetes.io/docs/concepts/cluster-administration/addons/
-
-Then you can join any number of worker nodes by running the following on each as root:
-
+7. Run kubeadm join command from worker nodes.
+```
 kubeadm join 172.31.9.249:6443 --token rs2bkd.utdhn7jmiao0n6ke \
         --discovery-token-ca-cert-hash sha256:030f242c3dc2fa125f5d403df6b782901bc152eaf2d2750e5fab3ce697e65060
-ubuntu@ubuntuk8s-1:~$
 
+```
 
-# calico
+8. Install network solution calico
+### calico
 
 kubectl create -f https://projectcalico.docs.tigera.io/manifests/tigera-operator.yaml
 
@@ -65,4 +62,7 @@ kubectl create -f https://projectcalico.docs.tigera.io/manifests/custom-resource
 
 watch kubectl get pods -n calico-system
 
+9. Remove the taint from control node
 kubectl taint nodes --all node-role.kubernetes.io/master-
+
+
