@@ -1,19 +1,18 @@
-data "aws_vpc" "myvpc" {
-  default = true
-}
+data "aws_vpc" "myvpc" {default = true}
 
 data "template_file" "init" {
   count = 3
   template = "${file("install_tools.sh")}"
 
   vars = {
-    hostname = "quick-EC2-ubuntu ${count.index+1}"
+    #hostname = "quick-EC2-ubuntu ${count.index+1}"
+    hostname = count.index+1
   }
 }
 
 resource "aws_key_pair" "demo-key" {
   key_name   = "demo-ec2-key"
-  public_key = file("${path.cwd}/demokey.pub")
+  public_key = file("${path.cwd}/${var.keypair}")
 
 }
 
@@ -30,6 +29,18 @@ resource "aws_instance" "quick-ec2_ubuntu" {
   root_block_device {
     volume_size = 40
   }
+  # provisioner "remote-exec" {
+  #   connection {
+  #     type        = "ssh"
+  #     user        = "ubuntu"
+  #     host        = self.public_ip
+  #     private_key = file("${path.cwd}/${var.keypair-private}")
+  #     script_path = "/home/ubuntu/install_tools.sh"
+  #   }
+  #   inline = [
+  #     "sudo echo {$self.private_ip}  ubuntuk8s-${count.index+1}>>/etc/hosts"
+  #   ]
+  # }
 }
 
 resource "aws_security_group" "allow_HTTP_SSH" {
