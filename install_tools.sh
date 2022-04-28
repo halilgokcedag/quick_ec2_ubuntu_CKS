@@ -19,6 +19,20 @@ net.bridge.bridge-nf-call-iptables = 1
 EOF
 sudo sysctl --system
 
+# workaround başlangıç - kubelet systemd için
+sudo mkdir /etc/docker
+cat <<EOF | sudo tee /etc/docker/daemon.json
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m"
+  },
+  "storage-driver": "overlay2"
+}
+EOF
+# workaround son
+
 
 sudo apt-get update
 sudo apt-get install -y apt-transport-https ca-certificates curl
@@ -32,6 +46,15 @@ sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 
 #End of some k8s installation commands
+
+#auto complete and alias
+
+source <(kubectl completion bash)
+echo "source <(kubectl completion bash)" >> ~/.bashrc
+
+alias k=kubectl
+complete -F __start_kubectl k
+
 
 
 sudo reboot
