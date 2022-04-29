@@ -54,10 +54,10 @@ echo "source <(kubectl completion bash)" >> ~/.bashrc
 
 alias k=kubectl
 complete -F __start_kubectl k
+source <(kubectl completion zsh)
+echo "[[ $commands[kubectl] ]] && source <(kubectl completion zsh)" >> ~/.zshrc # add autocomplete permanently to your zsh shell
+
 
 sudo apt-get install nmap
 
 sudo reboot
-
-## These are for CKS course. can be deleted after passing the exam.
-
