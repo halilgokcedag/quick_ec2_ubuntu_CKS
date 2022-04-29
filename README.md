@@ -11,30 +11,15 @@ Installs Docker, Git, k8s via user data.
 1. Run the terraform apply command.
 2. Once apply is complete. Run  hostscript.py python file. update etc/hosts file with the output from hostscript.py script.
 3. Login to all 3 nodes and add the hostname ve ips from step 2.
-4. 
-### workaround start - k8s related commands
-```
-sudo mkdir /etc/docker
-cat <<EOF | sudo tee /etc/docker/daemon.json
-{
-  "exec-opts": ["native.cgroupdriver=systemd"],
-  "log-driver": "json-file",
-  "log-opts": {
-    "max-size": "100m"
-  },
-  "storage-driver": "overlay2"
-}
-EOF
-```
-### workaround son
 
-5. create cluster with kubeadm:
+
+4. create cluster with kubeadm:
 
 ```
- kubeadm init --pod-network-cidr 192.168.0.0/16 --kubernetes-version 1.23.0
+ sudo kubeadm init --pod-network-cidr 192.168.0.0/16 --kubernetes-version 1.23.0
  ```
 
-6. Once you see below command. Run the below commands.
+5. Once you see below command. Run the below commands.
 
 Your Kubernetes control-plane has initialized successfully!
 ```
@@ -46,14 +31,14 @@ Alternatively, if you are the root user, you can run:
 
   export KUBECONFIG=/etc/kubernetes/admin.conf
 
-7. Run kubeadm join command from worker nodes.
+6. Run kubeadm join command from worker nodes.
 ```
 sudo kubeadm join 172.31.9.249:6443 --token rs2bkd.utdhn7jmiao0n6ke \
         --discovery-token-ca-cert-hash sha256:030f242c3dc2fa125f5d403df6b782901bc152eaf2d2750e5fab3ce697e65060
 
 ```
 
-8. Install network solution calico
+7. Install network solution calico
 ### calico
 ```
 kubectl create -f https://projectcalico.docs.tigera.io/manifests/tigera-operator.yaml
@@ -62,7 +47,7 @@ kubectl create -f https://projectcalico.docs.tigera.io/manifests/custom-resource
 
 watch kubectl get pods -n calico-system
 ```
-9. Remove the taint from control node
+8. Remove the taint from control node
 ```
 kubectl taint nodes --all node-role.kubernetes.io/master-
 ```
