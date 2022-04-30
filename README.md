@@ -46,6 +46,9 @@ kubectl create -f https://projectcalico.docs.tigera.io/manifests/tigera-operator
 kubectl create -f https://projectcalico.docs.tigera.io/manifests/custom-resources.yaml
 
 watch kubectl get pods -n calico-system
+
+Weave : 
+kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 ```
 8. Remove the taint from control node
 ```

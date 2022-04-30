@@ -50,12 +50,12 @@ sudo apt-mark hold kubelet kubeadm kubectl
 
 #auto complete and alias
 
-source <(kubectl completion bash)
+sudo apt-get install bash-completion
+source /usr/share/bash-completion/bash_completion
+
 echo "source <(kubectl completion bash)" >> ~/.bashrc
 
-alias k=kubectl
-complete -F __start_kubectl k
-source <(kubectl completion zsh)
-echo "[[ $commands[kubectl] ]] && source <(kubectl completion zsh)" >> ~/.zshrc # add autocomplete permanently to your zsh shell
+echo 'alias k=kubectl' >>~/.bashrc
+echo 'complete -F __start_kubectl k' >>~/.bashrc
 
 sudo reboot
