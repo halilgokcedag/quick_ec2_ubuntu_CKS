@@ -55,6 +55,7 @@ source /usr/share/bash-completion/bash_completion
 
 echo "source <(kubectl completion bash)" >> ~/.bashrc
 
+alias k=kubectl
 echo 'alias k=kubectl' >>~/.bashrc
 echo 'complete -F __start_kubectl k' >>~/.bashrc
 
