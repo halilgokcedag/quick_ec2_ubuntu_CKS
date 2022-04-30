@@ -38,16 +38,13 @@ sudo kubeadm join 172.31.9.249:6443 --token rs2bkd.utdhn7jmiao0n6ke \
 
 ```
 
-7. Install network solution calico
-### calico
-```
-kubectl create -f https://projectcalico.docs.tigera.io/manifests/tigera-operator.yaml
-
-kubectl create -f https://projectcalico.docs.tigera.io/manifests/custom-resources.yaml
-
-watch kubectl get pods -n calico-system
+7. Install network solution weave
+### weave
+calico iptal. nodeport ta sadece podun olduğu node webserverı serve ediyor.
+diğer nodelardan servise ulaşım yok. weave bu sorun çıkmadı 
 
 Weave : 
+```
 kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 ```
 8. Remove the taint from control node
