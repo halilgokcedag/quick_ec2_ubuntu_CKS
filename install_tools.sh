@@ -4,6 +4,7 @@ sudo apt-get install -y docker.io
 sudo usermod -aG docker ubuntu
 
 sudo apt-get install git -y
+sudo apt install nmap -y
 
 sudo hostnamectl set-hostname ubuntuk8s-${hostname}
 
@@ -56,8 +57,5 @@ alias k=kubectl
 complete -F __start_kubectl k
 source <(kubectl completion zsh)
 echo "[[ $commands[kubectl] ]] && source <(kubectl completion zsh)" >> ~/.zshrc # add autocomplete permanently to your zsh shell
-
-
-sudo apt-get install nmap
 
 sudo reboot
