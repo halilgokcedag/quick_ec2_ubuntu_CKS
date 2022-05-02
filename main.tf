@@ -1,7 +1,7 @@
 data "aws_vpc" "myvpc" {default = true}
 
 data "template_file" "init" {
-  count = 3
+  count = var.instance_count
   template = "${file("install_tools.sh")}"
 
   vars = {
@@ -17,7 +17,7 @@ resource "aws_key_pair" "demo-key" {
 }
 
 resource "aws_instance" "quick-ec2_ubuntu" {
-  count = 3
+  count = var.instance_count
   instance_type          = "t3.medium"
   ami                    = "ami-04505e74c0741db8d"
   key_name               = aws_key_pair.demo-key.id
