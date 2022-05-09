@@ -64,6 +64,14 @@ resource "aws_security_group" "allow_HTTP_SSH" {
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["0.0.0.0/0"]
   }
+    ingress {
+    description      = "dashboard from anywhere"
+    from_port        = 31016
+    to_port          = 31016
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["0.0.0.0/0"]
+  }
 
   egress {
     from_port        = 0

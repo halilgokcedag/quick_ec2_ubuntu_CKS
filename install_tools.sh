@@ -45,10 +45,80 @@ sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://pack
 echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
 sudo apt-get update -y
-sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-get install -y kubelet=1.23.6-00 kubeadm=1.23.6-00 kubectl=1.23.6-00 containerd
 sudo apt-mark hold kubelet kubeadm kubectl
 
 #End of some k8s installation commands
+
+
+#containerd
+
+### containerd
+cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
+overlay
+br_netfilter
+EOF
+sudo modprobe overlay
+sudo modprobe br_netfilter
+cat <<EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.ipv4.ip_forward                 = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+EOF
+sudo sysctl --system
+sudo mkdir -p /etc/containerd
+
+
+### containerd config
+cat > /etc/containerd/config.toml <<EOF
+disabled_plugins = []
+imports = []
+oom_score = 0
+plugin_dir = ""
+required_plugins = []
+root = "/var/lib/containerd"
+state = "/run/containerd"
+version = 2
+[plugins]
+  [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
+    [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+      base_runtime_spec = ""
+      container_annotations = []
+      pod_annotations = []
+      privileged_without_host_devices = false
+      runtime_engine = ""
+      runtime_root = ""
+      runtime_type = "io.containerd.runc.v2"
+      [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+        BinaryName = ""
+        CriuImagePath = ""
+        CriuPath = ""
+        CriuWorkPath = ""
+        IoGid = 0
+        IoUid = 0
+        NoNewKeyring = false
+        NoPivotRoot = false
+        Root = ""
+        ShimCgroup = ""
+        SystemdCgroup = true
+EOF
+
+### crictl uses containerd as default
+{
+cat <<EOF | sudo tee /etc/crictl.yaml
+runtime-endpoint: unix:///run/containerd/containerd.sock
+EOF
+}
+
+
+### kubelet should use containerd
+{
+cat <<EOF | sudo tee /etc/default/kubelet
+KUBELET_EXTRA_ARGS="--container-runtime remote --container-runtime-endpoint unix:///run/containerd/containerd.sock"
+EOF
+}
+
+
 
 #auto complete and alias
 
@@ -60,5 +130,13 @@ echo "source <(kubectl completion bash)" >> /home/ubuntu/.bashrc
 alias k=kubectl
 echo 'alias k=kubectl'>>/home/ubuntu/.bashrc
 echo 'complete -F __start_kubectl k' >>/home/ubuntu/.bashrc
+
+echo 'set tabstop=2' >> /home/ubuntu/.vimrc
+echo 'set shiftwidth=2' >> /home/ubuntu/.vimrc
+echo 'set expandtab' >> /home/ubuntu/.vimrc
+
+echo 'alias c=clear' >> /home/ubuntu/.bashrc
+
+
 
 sudo reboot

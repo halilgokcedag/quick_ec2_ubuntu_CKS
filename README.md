@@ -16,7 +16,7 @@ Installs Docker, Git, k8s via user data.
 4. create cluster with kubeadm:
 
 ```
- sudo kubeadm init --pod-network-cidr 192.168.0.0/16 --kubernetes-version 1.23.0
+ sudo kubeadm init --pod-network-cidr 192.168.0.0/16 --kubernetes-version 1.23.6
  ```
 
 5. Once you see below command. Run the below commands.
