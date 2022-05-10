@@ -4,7 +4,7 @@ This EC2 is for quick testing for CKS preparation. 1 control and 2 worker nodes.
 
 Uses Ubuntu AMI. 40G root volume.
 
-Installs Docker, Git, k8s via user data.
+Installs Docker, Containerd, Git, kubeadmin, kubectl, kubelet via user data.
 
 # Deployment
 
@@ -52,3 +52,6 @@ kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl versio
 kubectl taint nodes --all node-role.kubernetes.io/master-
 ```
 
+
+
+ kubectl config set-context --current --namespace=default
