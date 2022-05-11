@@ -7,6 +7,7 @@ data "template_file" "init" {
   vars = {
     #hostname = "quick-EC2-ubuntu ${count.index+1}"
     hostname = count.index+1
+    version=var.cluster_version
   }
 }
 

@@ -7,3 +7,7 @@ variable "instance_count" {
     default = 2
   
 }
+variable "cluster_version" {
+    #default = "1.23.6-00"
+  default = "1.22.2-00"
+}
