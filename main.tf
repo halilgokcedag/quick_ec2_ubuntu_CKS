@@ -1,13 +1,13 @@
-data "aws_vpc" "myvpc" {default = true}
+data "aws_vpc" "myvpc" { default = true }
 
 data "template_file" "init" {
-  count = var.instance_count
-  template = "${file("install_tools.sh")}"
+  count    = var.instance_count
+  template = file("install_tools.sh")
 
   vars = {
     #hostname = "quick-EC2-ubuntu ${count.index+1}"
-    hostname = count.index+1
-    version=var.cluster_version
+    hostname = count.index + 1
+    version  = var.cluster_version
   }
 }
 
@@ -18,14 +18,14 @@ resource "aws_key_pair" "demo-key" {
 }
 
 resource "aws_instance" "quick-ec2_ubuntu" {
-  count = var.instance_count
+  count                  = var.instance_count
   instance_type          = "t3.medium"
   ami                    = "ami-04505e74c0741db8d"
   key_name               = aws_key_pair.demo-key.id
   user_data              = data.template_file.init[count.index].rendered
   vpc_security_group_ids = [aws_security_group.allow_HTTP_SSH.id, aws_security_group.allow_traffic_within_cluster.id]
   tags = {
-    "Name" = "quick-EC2-ubuntu ${count.index+1}"
+    "Name" = "quick-EC2-ubuntu ${count.index + 1}"
   }
   root_block_device {
     volume_size = 40
@@ -65,7 +65,7 @@ resource "aws_security_group" "allow_HTTP_SSH" {
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["0.0.0.0/0"]
   }
-    ingress {
+  ingress {
     description      = "dashboard from anywhere"
     from_port        = 30000
     to_port          = 32000
@@ -94,11 +94,11 @@ resource "aws_security_group" "allow_traffic_within_cluster" {
   vpc_id      = data.aws_vpc.myvpc.id
 
   ingress {
-    description      = "Allow all traffic"
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    security_groups  = [aws_security_group.allow_HTTP_SSH.id]
+    description     = "Allow all traffic"
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    security_groups = [aws_security_group.allow_HTTP_SSH.id]
   }
   egress {
     from_port        = 0

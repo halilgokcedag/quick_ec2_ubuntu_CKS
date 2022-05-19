@@ -4,5 +4,5 @@ output "public_ips" {
 
 output "private_ips" {
   description = "Private IP addresses"
-  value = aws_instance.quick-ec2_ubuntu[*].private_ip
+  value       = aws_instance.quick-ec2_ubuntu[*].private_ip
 }
