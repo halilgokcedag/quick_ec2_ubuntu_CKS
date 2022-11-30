@@ -45,7 +45,9 @@ diğer nodelardan servise ulaşım yok. weave bu sorun çıkmadı
 
 Weave : 
 ```
-kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml```
+kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+```
+
 8. Remove the taint from control node
 ```
 kubectl taint nodes --all node-role.kubernetes.io/master-
